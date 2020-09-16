@@ -11,6 +11,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.support.serializer.JsonSerializer;
+
+import com.sahab.order.common.model.OrderDetails;
 
 @Configuration
 public class OrderProducerConfig {
@@ -23,18 +26,20 @@ public class OrderProducerConfig {
 		Map<String, Object> props = new HashMap<>();
 		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
 		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+		props.put( 
+		            ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, 
+		            JsonSerializer.class); 
 		return props;
 	}
 
 	@Bean
-	public ProducerFactory<String, String> producerFactory() {
+	public ProducerFactory<String, OrderDetails> producerFactory() {
 		return new DefaultKafkaProducerFactory<>(producerConfigs());
 	}
 
 	@Bean
-	  public KafkaTemplate<String, String> kafkaTemplate() {
-		  KafkaTemplate<String, String> kafkaTemplate= new KafkaTemplate<>(producerFactory());
+	  public KafkaTemplate<String, OrderDetails> kafkaTemplate() {
+		  KafkaTemplate<String, OrderDetails> kafkaTemplate= new KafkaTemplate<>(producerFactory());
 	    		
 				/*  kafkaTemplate.setProducerListener(new ProducerListener<String, String>() {
 	        @Override
@@ -42,7 +47,7 @@ public class OrderProducerConfig {
 	          ProducerRecord<String, String> producerRecord, 
 	          RecordMetadata recordMetadata) {
 	          
-	          LOG.info("ACK from ProducerListener message: {} offset:  {}",
+	          LOG.info("acknowledgement from ProducerListener message: {} offset:  {}",
 	            producerRecord.value(),
 	            recordMetadata.offset());
 	        }
@@ -52,7 +57,6 @@ public class OrderProducerConfig {
 	
 	/*@Bean
 	  public RoutingKafkaTemplate routingTemplate(GenericApplicationContext context) {
-	    // ProducerFactory with Bytes serializer
 	    Map<String, Object> props = new HashMap<>();
 	    props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, 
 	      bootstrapServers);
@@ -64,7 +68,6 @@ public class OrderProducerConfig {
 	      new DefaultKafkaProducerFactory<>(props);
 	    context.registerBean(DefaultKafkaProducerFactory.class, "bytesPF", bytesPF);
 
-	    // ProducerFactory with String serializer
 	    props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, 
 	      StringSerializer.class);
 	    DefaultKafkaProducerFactory<Object, Object> stringPF = 
