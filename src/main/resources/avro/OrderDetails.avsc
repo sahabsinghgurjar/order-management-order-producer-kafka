@@ -1,0 +1,11 @@
+{
+     "type": "record",
+     "namespace": "com.sahab.order.common.model",
+     "name": "OrderDetails",
+     "version": "1",
+     "fields": [
+       { "name": "orderName", "type": "string", "doc": "Id of the order filed" },
+       { "name": "orderId", "type": "string", "doc": "Id of the customer" },
+       { "name": "price", "type": "float", "doc": "Total price of the order" }
+     ]
+}

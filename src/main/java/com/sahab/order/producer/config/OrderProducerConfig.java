@@ -11,9 +11,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
-import org.springframework.kafka.support.serializer.JsonSerializer;
 
 import com.sahab.order.common.model.OrderDetails;
+
+import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
+import io.confluent.kafka.serializers.KafkaAvroSerializer;
 
 @Configuration
 public class OrderProducerConfig {
@@ -28,7 +30,8 @@ public class OrderProducerConfig {
 		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 		props.put( 
 		            ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, 
-		            JsonSerializer.class); 
+		            KafkaAvroSerializer.class); 
+		props.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "http://127.0.0.1:8081");
 		return props;
 	}
 
